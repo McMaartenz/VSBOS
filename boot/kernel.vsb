@@ -1,0 +1,6 @@
+;[version 13]
+
+DEF kernel
+SETM "1" "Hello world from kernel"
+RET 0
+ENDDEF kernel
