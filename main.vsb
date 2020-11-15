@@ -1,4 +1,0 @@
-DEF main
-    PRINT "Hello world!"
-    HLT
-ENDDEF main
