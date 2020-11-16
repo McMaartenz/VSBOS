@@ -1,0 +1,63 @@
+;[version 10]
+
+DEF bootloader
+IF NOT stop
+CMPR "L" $_ver "1.3"
+IF $_cmpr
+NEW stop
+PRINT "Your version is not supported"
+PRINT "1.3 or later required"
+CMPR "GE" $_ver "1.1"
+IF $_cmpr
+;[version 11]
+
+IF $_graphics
+SCREENOUT "10" "10" "0xDD0000" "Your version is not supported"
+SCREENOUT "10" "30" "0xDD0000" "1.3 or later required"
+SCREENUPD
+ENDIF
+ENDIF
+ELSE
+;[version 11]
+
+DO "main"
+CMPR "NE" $_ret "0"
+IF $_cmpr
+PRINT "System process fatal exit"
+ENDIF
+HLT
+ENDIF
+ENDIF
+ENDDEF bootloader
+;[version 13]
+
+DEF main
+PRINT "VERSION OK"
+IF NOT $_graphics
+PRINT "[HLT] No graphics module found!"
+HLT
+ENDIF
+PRINT "[OK] Graphics module found"
+ALOC "32"
+PRINT "Switching to kernel"
+CALL "kernel"
+CMPR "NE" $_ret "0"
+IF $_cmpr
+PRINT "[FATAL] Kernel exited with code " $_ret
+ELSE
+PRINT "[OK] Kernel exited with code 0"
+ENDIF
+NEW x "0"
+GETM x "1"
+PRINT $x
+DEL x
+FREE "32"
+HLT
+ENDDEF main
+;[version 13]
+
+DEF kernel
+SETM "1" "Hello world from kernel"
+PRINT $_ask
+RET "0"
+ENDDEF kernel
