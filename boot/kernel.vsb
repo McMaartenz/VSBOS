@@ -2,5 +2,6 @@
 
 DEF kernel
 SETM "1" "Hello world from kernel"
-RET 0
+PRINT $_ask
+RET "0"
 ENDDEF kernel

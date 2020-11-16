@@ -1,0 +1,25 @@
+;[version 13]
+
+DEF main
+    PRINT "VERSION OK"
+    IF NOT $_graphics
+        PRINT "[HLT] No graphics module found!"
+        HLT
+    ENDIF
+    PRINT "[OK] Graphics module found"
+    ALOC "32"
+    PRINT "Switching to kernel"
+    CALL "kernel"
+    CMPR "NE" $_ret "0"
+    IF $_cmpr
+        PRINT "[FATAL] Kernel exited with code " $_ret
+    ELSE
+        PRINT "[OK] Kernel exited with code 0"
+    ENDIF
+    NEW x "0"
+    GETM x "1"
+    PRINT $x
+    DEL x
+    FREE "32"
+    HLT
+ENDDEF main
