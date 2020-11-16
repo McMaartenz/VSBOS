@@ -1,7 +1,7 @@
 ;[version 13]
 
 DEF main
-    PRINT "VERSION OK"
+    PRINT "[OK] Version is supported"
     IF NOT $_graphics
         PRINT "[HLT] No graphics module found!"
         HLT
