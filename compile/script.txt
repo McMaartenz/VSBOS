@@ -32,13 +32,12 @@ ENDDEF bootloader
 ;[version 13]
 
 DEF main
-PRINT "VERSION OK"
+PRINT "[OK] Version is supported"
 IF NOT $_graphics
 PRINT "[HLT] No graphics module found!"
 HLT
 ENDIF
 PRINT "[OK] Graphics module found"
-ALOC "32"
 PRINT "Switching to kernel"
 CALL "kernel"
 CMPR "NE" $_ret "0"
@@ -47,17 +46,83 @@ PRINT "[FATAL] Kernel exited with code " $_ret
 ELSE
 PRINT "[OK] Kernel exited with code 0"
 ENDIF
-NEW x "0"
-GETM x "1"
-PRINT $x
-DEL x
-FREE "32"
 HLT
 ENDDEF main
 ;[version 13]
 
 DEF kernel
-SETM "1" "Hello world from kernel"
-PRINT $_ask
+; Memory size
+NEW memsize "0"
+ALOC "16"
+
+; Allocated memory, keeping track
+SETM "1" "16"
+
+; Actual memory start
+SETM "2" "5"
+
+; Memory block size
+SETM "3" "4"
+
+; Memory type (0: memory info)
+SETM "4" "0"
+
+PRINT "enter to allocate some mem" $_ask
+PUSH "!"
+PUSH "1"
+PUSH "2"
+PUSH "3"
+CALL "addblck"
+
+PRINT "enter to allocate even more mem" $_ask
+PUSH "!!"
+PUSH "4"
+PUSH "5"
+PUSH "6"
+CALL "addblck"
+
+PRINT "all done" $_ask
+
+; Free all memory
+GETM memsize "1"
+FREE $memsize
 RET "0"
 ENDDEF kernel
+;[version 13]
+
+; Adds a block of memory
+DEF addblck
+NEW blocksize "0"
+NEW allocated "0"
+
+; Get block size from memory
+GETM blocksize "3"
+
+; Get allocated memory to system
+GETM allocated "1"
+
+NEW addr "0"
+SET addr $allocated
+ADD addr "1"
+PUSH $addr
+ALOC $blocksize
+FOR "addblck1" $blocksize
+
+RET "0"
+ENDDEF addblck
+;[version 13]
+
+; Adds a block of memory
+DEF addblck1
+NEW addr "0"
+POP addr
+
+NEW arg "0"
+POP arg
+
+SETM $addr $arg
+
+ADD addr "1"
+PUSH $addr
+RET "0"
+ENDDEF addblck1
