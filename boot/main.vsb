@@ -1,19 +1,60 @@
 ; [version 13]
 
 DEF main
-    PRINT "[OK] Version is supported"
-    IF NOT $_graphics
-        PRINT "[HLT] No graphics module found!"
+    CMPR "L" $_ver "1.3"
+    IF $_cmpr
+        IF NOT stop
+            NEW stop "0"
+            PRINT "Your version is not supported"
+            PRINT "1.3 or later required"
+        ENDIF
+        CMPR "GE" $_ver "1.1"
+        IF $_cmpr
+            IF $_graphics
+                SCREENFILL "0x000000"
+                SCREENOUT "10" "20" "0xFFFFFF" "Your version is incompatible"
+                CMPR "L" $_ww "479"
+                    IF $_cmpr
+                        SCREENOUT "10" "40" "0xFFFFFF" "VSB Engine 1.3 or later is required"
+                    ELSE
+                        SCREENOUT "10" "30" "0xFFFFFF" "VSB Engine 1.3 or later is required"
+                    ENDIF
+                ENDIF
+                CMPR "EQL" $stop "1"
+                IF $_cmpr
+                    CMPR "L" $_ww "479"
+                    IF $_cmpr
+                        SCREENLN "40" "375" "40" "385" "0xFFFFFF"
+                    ELSE
+                        SCREENLN "30" "192" "30" "197" "0xFFFFFF"
+                    ENDIF
+                    SET stop "0"
+                ELSE
+                    SET stop "1"
+                ENDIF
+                SCREENUPD
+            ENDIF
+        ENDIF
+        IF NOT stopa
+            NEW stopa "0"
+            PRINT "[HLT] Version is incompatible"
+        ENDIF
+    ENDIF
+    IF NOT stop
+        PRINT "[OK] Version is supported"
+        IF NOT $_graphics
+            PRINT "[HLT] No graphics module found!"
+            HLT
+        ENDIF
+        PRINT "[OK] Graphics module found"
+        PRINT "Switching to kernel"
+        CALL "kernel"
+        CMPR "NE" $_ret "0"
+        IF $_cmpr
+            PRINT "[FATAL] Kernel exited with code " $_ret
+        ELSE
+            PRINT "[OK] Kernel exited with code 0"
+        ENDIF
         HLT
     ENDIF
-    PRINT "[OK] Graphics module found"
-    PRINT "Switching to kernel"
-    CALL "kernel"
-    CMPR "NE" $_ret "0"
-    IF $_cmpr
-        PRINT "[FATAL] Kernel exited with code " $_ret
-    ELSE
-        PRINT "[OK] Kernel exited with code 0"
-    ENDIF
-    HLT
 ENDDEF main
