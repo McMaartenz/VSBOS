@@ -1,11 +1,12 @@
 ;[version 13]
 
 ; Adds a block of memory
+
 DEF addblck1
-    NEW addr "0"
+    NEW addr "1"
     POP addr
 
-    NEW arg "0"
+    NEW arg "?1"
     POP arg
 
     SETM $addr $arg
