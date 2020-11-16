@@ -1,4 +1,4 @@
-;[version 10]
+; [version 10]
 
 DEF bootloader
 IF NOT stop
@@ -29,7 +29,7 @@ HLT
 ENDIF
 ENDIF
 ENDDEF bootloader
-;[version 13]
+; [version 13]
 
 DEF main
 PRINT "[OK] Version is supported"
@@ -48,83 +48,75 @@ PRINT "[OK] Kernel exited with code 0"
 ENDIF
 HLT
 ENDDEF main
-;[version 13]
+; [version 13]
 
 DEF kernel
 ; Memory size
 NEW memsize "0"
-ALOC "16"
+ALOC "4"
 
-; Allocated memory, keeping track
-SETM "1" "16"
+; default mem interface
+; 1: Data 1
+; 2: Data 2
+; 3: Data type
+; 4: Out of use
 
-; Actual memory start
-SETM "2" "5"
-
-; Memory block size
-SETM "3" "4"
-
-; Memory type (0: memory info)
+; Interface at 1
+; 1: Allocated memory
+; 2: Memory block size
+; 3: 0: memory info
+SETM "1" "4"
+SETM "2" "4"
+SETM "3" "0"
 SETM "4" "0"
 
-PRINT "enter to allocate some mem" $_ask
-PUSH "!"
+PRINT "enter to allocate memory" $_ask
+PUSH "0"
+PUSH "0"
+; 1: data type int
 PUSH "1"
-PUSH "2"
-PUSH "3"
-CALL "addblck"
-
-PRINT "enter to allocate even more mem" $_ask
-PUSH "!!"
-PUSH "4"
-PUSH "5"
-PUSH "6"
+PUSH "0"
+PRINT $_ask
 CALL "addblck"
 
 PRINT "all done" $_ask
+
+CALL "rmblck"
 
 ; Free all memory
 GETM memsize "1"
 FREE $memsize
 RET "0"
 ENDDEF kernel
-;[version 13]
-
-; Adds a block of memory
+; [version 13]
 
 DEF addblck
-NEW blocksize "0"
-NEW allocated "0"
-
-; Get block size from memory
-GETM blocksize "3"
-
-; Get allocated memory to system
-GETM allocated "1"
-
-NEW addr "0"
-SET addr $allocated
-ADD addr "1"
-PUSH $addr
+IF NOT counter
+NEW counter "0"
+NEW memamount "0"
+NEW blocksize "1"
+NEW arg "0"
+GETM blocksize "2"
 ALOC $blocksize
-FOR "addblck1" $blocksize
-
-RET "0"
-ENDDEF addblck
-;[version 13]
-
-; Adds a block of memory
-
-DEF addblck1
-NEW addr "1"
-POP addr
-
-NEW arg "?1"
+GETM memamount "1"
+ADD memamount $blocksize
+SETM "1" $memamount
+SET counter $blocksize
+ENDIF
 POP arg
-
-SETM $addr $arg
-
-ADD addr "1"
-PUSH $addr
+SETM $memamount $arg
+SUB memamount "1"
+SUB counter "1"
+CMPR "LE" $counter "0"
+IF $_cmpr
 RET "0"
-ENDDEF addblck1
+ENDIF
+ENDDEF addblck
+; [version 13]
+
+DEF rmblck
+NEW blocksize "0"
+GETM blocksize "2"
+FREE $blocksize
+RET "0"
+ENDDEF rmblck

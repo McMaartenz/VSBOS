@@ -1,4 +1,4 @@
-;[version 10]
+; [version 10]
 
 DEF bootloader
     IF NOT stop

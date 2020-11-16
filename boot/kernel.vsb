@@ -1,37 +1,36 @@
-;[version 13]
+; [version 13]
 
 DEF kernel
     ; Memory size
     NEW memsize "0"
-    ALOC "16"
+    ALOC "4"
 
-    ; Allocated memory, keeping track
-    SETM "1" "16"
+    ; default mem interface
+    ; 1: Data 1
+    ; 2: Data 2
+    ; 3: Data type
+    ; 4: Out of use
 
-    ; Actual memory start
-    SETM "2" "5"
-
-    ; Memory block size
-    SETM "3" "4"
-
-    ; Memory type (0: memory info)
+    ; Interface at 1
+    ; 1: Allocated memory
+    ; 2: Memory block size
+    ; 3: 0: memory info
+    SETM "1" "4"
+    SETM "2" "4"
+    SETM "3" "0"
     SETM "4" "0"
 
-    PRINT "enter to allocate some mem" $_ask
-    PUSH "!"
+    PRINT "enter to allocate memory" $_ask
+    PUSH "0"
+    PUSH "0"
+    ; 1: data type int
     PUSH "1"
-    PUSH "2"
-    PUSH "3"
-    CALL "addblck"
-
-    PRINT "enter to allocate even more mem" $_ask
-    PUSH "!!"
-    PUSH "4"
-    PUSH "5"
-    PUSH "6"
+    PUSH "0"
     CALL "addblck"
 
     PRINT "all done" $_ask
+
+    CALL "rmblck"
 
     ; Free all memory
     GETM memsize "1"

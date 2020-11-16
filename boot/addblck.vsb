@@ -1,23 +1,24 @@
-;[version 13]
-
-; Adds a block of memory
+; [version 13]
 
 DEF addblck
-    NEW blocksize "0"
-    NEW allocated "0"
-
-    ; Get block size from memory
-    GETM blocksize "3"
-
-    ; Get allocated memory to system
-    GETM allocated "1"
-
-    NEW addr "0"
-    SET addr $allocated
-    ADD addr "1"
-    PUSH $addr
-    ALOC $blocksize
-    FOR "addblck1" $blocksize
-
-    RET "0"
+    IF NOT counter
+        NEW counter "0"
+        NEW memamount "0"
+        NEW blocksize "1"
+        NEW arg "0"
+        GETM blocksize "2"
+        ALOC $blocksize
+        GETM memamount "1"
+        ADD memamount $blocksize
+        SETM "1" $memamount
+        SET counter $blocksize
+    ENDIF
+    POP arg
+    SETM $memamount $arg
+    SUB memamount "1"
+    SUB counter "1"
+    CMPR "LE" $counter "0"
+    IF $_cmpr
+        RET "0"
+    ENDIF
 ENDDEF addblck

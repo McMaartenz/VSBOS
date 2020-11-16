@@ -1,0 +1,8 @@
+; [version 13]
+
+DEF rmblck
+    NEW blocksize "0"
+    GETM blocksize "2"
+    FREE $blocksize
+    RET "0"
+ENDDEF rmblck
