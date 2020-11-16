@@ -1,7 +1,7 @@
 ;[version 13]
 
 DEF kernel
-SETM "1" "Hello world from kernel"
-PRINT $_ask
-RET "0"
+    SETM "1" "Hello world from kernel"
+    PRINT $_ask
+    RET "0"
 ENDDEF kernel
